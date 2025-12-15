@@ -1,0 +1,87 @@
+/* TODO: probably should remove this */
+int getWordsAmount(char **line, int lineNum)
+{
+    /* TODO: check here syntax errors */
+
+    int count = 1; /* 1 is the operation (e.g. mov) */
+
+    while (**line)
+    {
+        int isWordRegister = FALSE;
+
+        skipWhiteSpaces(line); /* skip the white spaces */
+
+        /* immiediate numbers need a word, labels too, not registers */
+        if ((isWordRegister = isRegister(line)) == INVALID_REGISTER_NUM)
+        {
+            return SYNTAX_ERROR;
+        }
+        else if (!isWordRegister)
+        {
+            count++;
+        }
+    }
+
+    return count; /* return the amount of words */
+}
+
+/* function that checks if a the next word in the line is a register */
+int isRegister(char **line)
+{
+    /* first charater must be 'r' */
+    if (**line != 'r')
+    {
+        printf("1\n");
+        return FALSE; /* not a register */
+    }
+
+    (*line)++; /* move to the next character */
+
+    /* have to be a number after that */
+
+    /* check if the next character is a digit */
+    if (!isdigit(**line))
+    {
+        printf("2\n");
+
+        return FALSE; /* not a register */
+    }
+    else if (**line > SEVEN_CHAR)
+    {
+        /* if the digit is above seven its not a valid register num */
+        return INVALID_REGISTER_NUM;
+    }
+
+    (*line)++; /* move to the next character */
+
+    if (!isspace(**line) && **line != NULL_TERMINATOR)
+    {
+        if (isdigit(**line))
+        {
+            /* move to the next non-digit character */
+            while (!isdigit(**(++line)))
+                ;
+
+            /* if its a whitespace, invalid register number (can only get 0-7 and this is multiple digits) */
+            if (isspace(**line) || **line == NULL_TERMINATOR)
+            {
+                return INVALID_REGISTER_NUM;
+            }
+            else
+            {
+                printf("3\n");
+
+                /* simply not a register */
+                return FALSE;
+            }
+        }
+        else
+        {
+            printf("4\n");
+
+            return FALSE; /* not a register */
+        }
+    }
+
+    return TRUE; /* valid register */
+}

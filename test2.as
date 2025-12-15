@@ -1,0 +1,3 @@
+.extern LABEL
+
+jmp &LABEL
